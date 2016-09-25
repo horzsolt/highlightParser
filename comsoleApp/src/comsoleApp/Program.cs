@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace comsoleApp
 {
     public class Program
     {
         static string filePath = "g:\\My Clippings.txt";
-        static string outputDirectory = "g:\\kindleoutput1";
+        static string outputDirectory = "g:\\kindleoutput";
+        static List<string> words = new List<string> {"table", "figure"};
 
         public static void Main(string[] args)
         {
@@ -21,6 +24,7 @@ namespace comsoleApp
 
                     reader.ReadLine(); //always empty
                     string selectedTextLine = reader.ReadLine();
+
                     reader.ReadLine(); // separator line
 
                     Highlight hl = new Highlight();
@@ -80,6 +84,12 @@ namespace comsoleApp
                 {
                     writer.WriteLine("<h2>" + hl.SelectedText + "</h2>");
                 }
+                else if (words.Any(w => hl.SelectedText.Contains(w)))
+                {
+                    writer.WriteLine("<hr>");
+                    writer.WriteLine("<h2>Image placeholder</h2>");
+                    writer.WriteLine("<hr>");
+                }
                 else if (hl.SelectedText.Length < 40)
                 {
                     writer.WriteLine("<h3>" + hl.SelectedText + "</h3>");
@@ -87,6 +97,7 @@ namespace comsoleApp
                 else
                 {
                     writer.WriteLine("<span>" + hl.SelectedText + "</span>");
+                    byte[] asciiBytes = Encoding.UTF8.GetBytes(hl.SelectedText);
                     writer.WriteLine("<span></span>");
                     writer.WriteLine("<span></span>");
                 }
